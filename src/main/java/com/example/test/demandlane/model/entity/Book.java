@@ -1,17 +1,32 @@
 package com.example.test.demandlane.model.entity;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Entity
 @Table(name = "book")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Book {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String author;
+
+    @Column(nullable = false, unique = true)
     private String isbn;
+
+    @Column(nullable = false)
     private int totalCopies;
+
+    @Column(nullable = false)
     private int availableCopies;
 }
