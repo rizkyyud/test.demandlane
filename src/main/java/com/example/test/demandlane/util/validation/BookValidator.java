@@ -14,20 +14,20 @@ public class BookValidator {
     private final BookRepository bookRepository;
 
     public void validateAddBook(RequestBook requestBook) throws BadRequestException {
-        if(isNotBlank(requestBook.title())){
+        if(!isNotBlank(requestBook.title())){
             throw new BadRequestException("Title is required");
         }
-        if(isNotBlank(requestBook.author())){
+        if(!isNotBlank(requestBook.author())){
             throw new BadRequestException("Author is required");
         }
-        if(isNotBlank(requestBook.isbn())){
-            if(bookRepository.existsByIsbn(requestBook.isbn())){
-                throw new BadRequestException("Isbn is already in use");
-            }
+        if(!isNotBlank(requestBook.isbn())){
             throw new BadRequestException("Isbn is required");
         }
         if(requestBook.totalCopies() < 1){
             throw new BadRequestException("Total copies must be greater than 0");
+        }
+        if(bookRepository.existsByIsbn(requestBook.isbn())){
+            throw new BadRequestException("Isbn is already in use");
         }
     }
 

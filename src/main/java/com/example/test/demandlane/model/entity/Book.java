@@ -13,20 +13,21 @@ import lombok.*;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "isbn", nullable = false, unique = true)
     private String isbn;
 
-    @Column(nullable = false)
+    @Column(name = "total_copies", nullable = false)
     private int totalCopies;
 
-    @Column(nullable = false)
+    @Column(name = "available_copies", nullable = false)
     private int availableCopies;
 }
