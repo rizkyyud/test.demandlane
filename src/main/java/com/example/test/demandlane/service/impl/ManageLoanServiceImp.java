@@ -65,7 +65,7 @@ public class ManageLoanServiceImp implements ManageLoanService {
         loanRepository.save(loan);
 
         Book book = loan.getBook();
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        book.setAvailableCopies(book.getAvailableCopies() + 1);
         bookRepository.save(book);
         return loan;
     }
