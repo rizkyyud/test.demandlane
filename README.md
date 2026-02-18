@@ -115,4 +115,14 @@ Custom validator classes ensure:
 ### **_Actuator & Monitoring_**
 * `/actuator/health` → Public
 * `/actuator/**` → ADMIN only
+---
+### **_API Documentation_**
+Swagger UI is available at:
+`/swagger-ui/index.html`
+---
+### **_Assumptions_**
+* A loan cannot exist without a valid member and book. 
+* A book may have multiple loans. 
+* Only ADMIN can modify data. 
+* USER role is read-only.
 
