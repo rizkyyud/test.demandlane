@@ -1,10 +1,10 @@
 package com.example.test.demandlane.util.validation;
 
+import com.example.test.demandlane.exception.BadRequestException;
 import com.example.test.demandlane.model.dto.request.RequestBook;
 import com.example.test.demandlane.model.entity.Book;
 import com.example.test.demandlane.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,32 +13,13 @@ public class BookValidator {
 
     private final BookRepository bookRepository;
 
-    public void validateAddBook(RequestBook requestBook) throws BadRequestException {
-        if(!isNotBlank(requestBook.title())){
-            throw new BadRequestException("Title is required");
-        }
-        if(!isNotBlank(requestBook.author())){
-            throw new BadRequestException("Author is required");
-        }
-        if(!isNotBlank(requestBook.isbn())){
-            throw new BadRequestException("Isbn is required");
-        }
-        if(requestBook.totalCopies() < 1){
-            throw new BadRequestException("Total copies must be greater than 0");
-        }
+    public void validateAddBook(RequestBook requestBook)  {
         if(bookRepository.existsByIsbn(requestBook.isbn())){
             throw new BadRequestException("Isbn is already in use");
         }
     }
 
     public void validateUpdateBook(RequestBook requestBook, Book existBook) throws BadRequestException {
-
-        boolean validField = isNotBlank(requestBook.title()) || isNotBlank(requestBook.author())
-                || isNotBlank(requestBook.isbn()) || requestBook.totalCopies() != null;
-
-        if(!validField){
-            throw new BadRequestException("At least one field must be provided");
-        }
 
         if(bookRepository.existsByIsbn(requestBook.isbn())
                 && !existBook.getIsbn().equals(requestBook.isbn())){

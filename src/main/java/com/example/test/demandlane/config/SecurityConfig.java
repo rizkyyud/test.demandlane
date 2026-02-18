@@ -55,7 +55,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/demandlane/book/getBooks").hasRole("ADMIN")
+//                        .requestMatchers("/demandlane/book/manage/**").hasRole("ADMIN")
                         .requestMatchers("/demandlane/book/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())

@@ -6,7 +6,9 @@ import com.example.test.demandlane.repository.BookRepository;
 import com.example.test.demandlane.service.ManageBookService;
 import com.example.test.demandlane.util.validation.BookValidator;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,22 +16,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManageBookServiceImp implements ManageBookService {
 
+    private static final Logger log = LoggerFactory.getLogger(ManageBookServiceImp.class);
     private final BookRepository bookRepository;
 
     private final BookValidator bookValidator;
 
     @Override
     public List<Book> getAllBook() {
-        return bookRepository.findAll();
+        List<Book> books = bookRepository.findAll();
+        String traceId = MDC.get("traceId");
+        log.info("Success Get Data Books [{}] : {}", traceId, books);
+        return books;
     }
 
     @Override
     public Book getBookById(Long id) {
-        return bookRepository.findById(id).orElseThrow(()-> new RuntimeException("Book not found"));
+        Book book = bookRepository.findById(id).orElseThrow(()-> new RuntimeException("Book not found"));
+        String traceId = MDC.get("traceId");
+        log.info("Success Get Data Book [{}] : {}", traceId, book);
+        return book;
     }
 
     @Override
-    public Book addBook(RequestBook book) throws BadRequestException {
+    public Book addBook(RequestBook book) {
         bookValidator.validateAddBook(book);
         Book newBook = Book.builder()
                 .title(book.title())
@@ -38,12 +47,16 @@ public class ManageBookServiceImp implements ManageBookService {
                 .totalCopies(book.totalCopies())
                 .availableCopies(book.totalCopies())
                 .build();
-        return bookRepository.save(newBook);
+        Book savedBook = bookRepository.save(newBook);
+        String traceId = MDC.get("traceId");
+        log.info("Success Add Data Book [{}] : {}", traceId, savedBook);
+        return savedBook;
     }
 
     @Override
-    public Book updateBook(Long id, RequestBook request) throws BadRequestException {
-        Book updateBook = getBookById(id);
+    public Book updateBook(Long id, RequestBook request) {
+        Book updateBook = bookRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Book not found"));;
         bookValidator.validateUpdateBook(request, updateBook);
 
         if (request.title() != null && !request.title().isBlank()) {
@@ -60,9 +73,13 @@ public class ManageBookServiceImp implements ManageBookService {
 
         if (request.totalCopies() != null) {
             updateBook.setTotalCopies(request.totalCopies());
+            updateBook.setAvailableCopies(request.totalCopies());
         }
 
-        return bookRepository.save(updateBook);
+        Book savedBook = bookRepository.save(updateBook);
+        String traceId = MDC.get("traceId");
+        log.info("Success Update Data Book [{}] : {}", traceId, savedBook);
+        return savedBook;
     }
 
     @Override
@@ -70,5 +87,7 @@ public class ManageBookServiceImp implements ManageBookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
         bookRepository.delete(book);
+        String traceId = MDC.get("traceId");
+        log.info("Success Delete Data Book [{}] : {}", traceId, book);
     }
 }
