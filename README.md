@@ -4,6 +4,20 @@ This project is a RESTful API for a small-scale library management system develo
 
 The latest implementation is available in:
 `feature/book-module`
+
+---
+### _**Tech Stack**_
+* Java 17 
+* Spring Boot 3.5.10 
+* Spring Web 
+* Spring Data JPA 
+* Spring Validation 
+* Spring Security (Basic Auth)
+* Spring Boot Actuator 
+* H2 In-Memory Database 
+* Lombok 
+* Springdoc OpenAPI (Swagger UI)
+* Maven
 ---
 ### _**Project Overview**_
 
