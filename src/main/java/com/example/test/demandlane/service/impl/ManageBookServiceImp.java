@@ -39,7 +39,7 @@ public class ManageBookServiceImp implements ManageBookService {
 
     @Override
     public Book addBook(RequestBook book) {
-        bookValidator.validateAddBook(book);
+        bookValidator.validateIsbnUnique(book.isbn());
         Book newBook = Book.builder()
                 .title(book.title())
                 .author(book.author())
@@ -56,8 +56,9 @@ public class ManageBookServiceImp implements ManageBookService {
     @Override
     public Book updateBook(Long id, RequestBook request) {
         Book updateBook = bookRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Book not found"));;
-        bookValidator.validateUpdateBook(request, updateBook);
+                .orElseThrow(()-> new RuntimeException("Book not found"));
+
+        bookValidator.validateUpdate(request.isbn(), updateBook);
 
         if (request.title() != null && !request.title().isBlank()) {
             updateBook.setTitle(request.title());
@@ -86,6 +87,7 @@ public class ManageBookServiceImp implements ManageBookService {
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+        bookValidator.validateIdUsed(id);
         bookRepository.delete(book);
         String traceId = MDC.get("traceId");
         log.info("Success Delete Data Book [{}] : {}", traceId, book);

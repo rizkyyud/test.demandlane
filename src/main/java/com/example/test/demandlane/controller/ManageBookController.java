@@ -29,21 +29,19 @@ public class ManageBookController {
     @GetMapping("/getBook/{id}")
     public ResponseEntity<ApiResponse<Book>> getBookById(@PathVariable Long id) {
         Book book = manageBookService.getBookById(id);
-        return ResponseEntity.ok().body(ApiResponse.success("Book found", book));
+        return ResponseEntity.ok(ApiResponse.success("Book found", book));
     }
 
     @GetMapping("/getBooks")
     public ResponseEntity<ApiResponse<List<Book>>> getAllBook(){
         List<Book> books = manageBookService.getAllBook();
-        return ResponseEntity.ok()
-                .body(ApiResponse.success("Success get all books", books));
+        return ResponseEntity.ok(ApiResponse.success("Success get all books", books));
     }
 
     @PatchMapping("/manage/updateBook/{id}")
     public ResponseEntity<ApiResponse<Book>> updateBook(@PathVariable Long id, @Valid @RequestBody RequestBook request) {
         Book book = manageBookService.updateBook(id, request);
-        return ResponseEntity.ok()
-                .body(ApiResponse.success("Success update book", book));
+        return ResponseEntity.ok(ApiResponse.success("Success update book", book));
     }
 
     @DeleteMapping("/manage/deleteBook/{id}")

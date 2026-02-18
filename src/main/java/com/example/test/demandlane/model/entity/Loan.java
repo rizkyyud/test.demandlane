@@ -3,8 +3,7 @@ package com.example.test.demandlane.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "loan")
@@ -19,10 +18,20 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long bookId;
-    private Long memberId;
-    private LocalDateTime borrowedAt;
-    private LocalDateTime dueDate;
-    private LocalDateTime returnedAt;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    @Column(name = "borrowed_at", nullable = false)
+    private LocalDate borrowedAt;
+
+    @Column(name = "due_date", nullable = false)
+    private LocalDate dueDate;
+
+    @Column(name = "returned_at")
+    private LocalDate returnedAt;
 }

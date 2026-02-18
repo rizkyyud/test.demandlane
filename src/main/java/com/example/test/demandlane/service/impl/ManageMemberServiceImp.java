@@ -40,7 +40,7 @@ public class ManageMemberServiceImp implements ManageMemberService {
 
     @Override
     public Member addMember(RequestMember member) {
-        memberValidator.validate(member);
+        memberValidator.validateEmailUnique(member.email());
         Member newMember = Member.builder()
                 .name(member.name())
                 .email(member.email())
@@ -53,7 +53,7 @@ public class ManageMemberServiceImp implements ManageMemberService {
 
     @Override
     public Member updateMember(Long id, RequestMember member) {
-        memberValidator.validate(member);
+        memberValidator.validateEmailUnique(member.email());
         Member existMember = memberRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Member not found"));
 
@@ -73,6 +73,7 @@ public class ManageMemberServiceImp implements ManageMemberService {
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Member not found"));
+        memberValidator.validateIdUsed(id);
         memberRepository.delete(member);
         String traceId = MDC.get("traceId");
         log.info("Success Delete Member [{}] : {}", traceId, member);

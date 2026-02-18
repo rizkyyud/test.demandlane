@@ -17,16 +17,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${admin.username}")
+    @Value("${admin.username:admin}")
     private String adminUsername;
 
-    @Value("${admin.password}")
+    @Value("${admin.password:4dm1n}")
     private String adminPassword;
 
-    @Value("${tester.username}")
+    @Value("${tester.username:tester}")
     private String testerUsername;
 
-    @Value("${tester.password}")
+    @Value("${tester.password:t3st3r}")
     private String testerPassword;
 
     @Bean
@@ -55,8 +55,11 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-//                        .requestMatchers("/demandlane/book/manage/**").hasRole("ADMIN")
+                        .requestMatchers("/demandlane/book/manage/**").hasRole("ADMIN")
                         .requestMatchers("/demandlane/book/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/demandlane/member/manage/**").hasRole("ADMIN")
+                        .requestMatchers("/demandlane/member/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/demandlane/loan").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))

@@ -4,6 +4,7 @@ import com.example.test.demandlane.exception.BadRequestException;
 import com.example.test.demandlane.model.dto.request.RequestBook;
 import com.example.test.demandlane.model.entity.Book;
 import com.example.test.demandlane.repository.BookRepository;
+import com.example.test.demandlane.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,29 +13,36 @@ import org.springframework.stereotype.Component;
 public class BookValidator {
 
     private final BookRepository bookRepository;
+    private final LoanRepository loanRepository;
 
-    public void validateAddBook(RequestBook requestBook)  {
-        if(bookRepository.existsByIsbn(requestBook.isbn())){
-            throw new BadRequestException("Isbn is already in use");
+    public void validateIsbnUnique(String isbn) {
+        if (bookRepository.existsByIsbn(isbn)) {
+            throw new BadRequestException("ISBN is already in use");
         }
     }
 
-    public void validateUpdateBook(RequestBook requestBook, Book existBook) throws BadRequestException {
+    public void validateUpdate(String newIsbn, Book existingBook) {
 
-        if(bookRepository.existsByIsbn(requestBook.isbn())
-                && !existBook.getIsbn().equals(requestBook.isbn())){
-            throw new BadRequestException("Isbn is already in use");
+        if (bookRepository.existsByIsbn(newIsbn)
+                && !existingBook.getIsbn().equals(newIsbn)) {
+            throw new BadRequestException("ISBN is already in use");
         }
 
-        int borrowed = existBook.getTotalCopies() - existBook.getAvailableCopies();
+        int borrowed =
+                existingBook.getTotalCopies()
+                        - existingBook.getAvailableCopies();
 
-        if (requestBook.totalCopies() < borrowed) {
-            throw new BadRequestException("Total copies cannot be less than borrowed copies");
+        if (borrowed > existingBook.getTotalCopies()) {
+            throw new BadRequestException(
+                    "Invalid book stock"
+            );
         }
-
     }
 
-    private boolean isNotBlank(String value) {
-        return value != null && !value.isBlank();
+    public void validateIdUsed(Long id) {
+        if (bookRepository.existsById(id)) {
+            throw new BadRequestException("Book ID is already in use");
+        }
     }
+
 }
