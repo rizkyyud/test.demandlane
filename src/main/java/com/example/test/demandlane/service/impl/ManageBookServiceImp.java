@@ -73,8 +73,9 @@ public class ManageBookServiceImp implements ManageBookService {
         }
 
         if (request.totalCopies() != null) {
+            int borrowedCopies = updateBook.getTotalCopies() - updateBook.getAvailableCopies();
             updateBook.setTotalCopies(request.totalCopies());
-            updateBook.setAvailableCopies(request.totalCopies());
+            updateBook.setAvailableCopies(request.totalCopies() - borrowedCopies);
         }
 
         Book savedBook = bookRepository.save(updateBook);
