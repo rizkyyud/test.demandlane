@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException e) {
         String traceId = MDC.get("traceId");
         log.warn("Validation Error [{}]: {}", traceId, e.getMessage());
-        return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage(), null));
+        return ResponseEntity.badRequest().body(ApiResponse.error(traceId, e.getMessage(), null));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -26,14 +26,14 @@ public class GlobalExceptionHandler {
                 .getFieldError()
                 .getDefaultMessage();
         log.warn("Validation Request Error [{}]: {}", traceId, message);
-        return ResponseEntity.badRequest().body(ApiResponse.error(message, null));
+        return ResponseEntity.badRequest().body(ApiResponse.error(traceId, message, null));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
         String traceId = MDC.get("traceId");
         log.error("Unhandled Exception [{}]: {}", traceId, e.getMessage());
-        return ResponseEntity.internalServerError().body(ApiResponse.error(e.getMessage(), null));
+        return ResponseEntity.internalServerError().body(ApiResponse.error(traceId, e.getMessage(), null));
     }
 
 }

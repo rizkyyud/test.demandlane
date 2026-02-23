@@ -20,7 +20,7 @@ public class LoanSecurityTest {
 
     @Test
     void createLoan_withoutAuth_shouldReturn401() throws Exception {
-        mockMvc.perform(post("/demandlane/loan/createLoan")
+        mockMvc.perform(post("/demandlane/loan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {"bookId":1,"memberId":1}
@@ -31,7 +31,7 @@ public class LoanSecurityTest {
     @Test
     @WithMockUser(roles = "USER")
     void createLoan_userRole_shouldReturn403() throws Exception {
-        mockMvc.perform(post("/demandlane/loan/createLoan")
+        mockMvc.perform(post("/demandlane/loan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {"bookId":1,"memberId":1}
@@ -42,7 +42,7 @@ public class LoanSecurityTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createLoan_adminRole_shouldReturn201() throws Exception {
-        mockMvc.perform(post("/demandlane/loan/createLoan")
+        mockMvc.perform(post("/demandlane/loan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {"bookId":1,"memberId":1}
